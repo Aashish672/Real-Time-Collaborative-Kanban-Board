@@ -13,6 +13,6 @@ class Card(models.Model):
 
     class Meta:
         ordering=['position']
-        unique_together = ['parent_list', 'position']
+        #unique_together = ['parent_list', 'position']
     def __str__(self):
         return self.title

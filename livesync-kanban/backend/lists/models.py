@@ -11,7 +11,7 @@ class List(models.Model):
     
     class Meta:
         ordering=['position']
-        unique_together = ['board', 'position']
+        #unique_together = ['board', 'position']
     def __str__(self):
         return self.title
     
