@@ -17,18 +17,28 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 from rest_framework.routers import DefaultRouter
-from boards.views import BoardViewSet
+from boards.views import BoardViewSet, RegisterView, UserProfileView, LabelViewSet
 from lists.views import ListViewSet
-from cards.views import CardViewSet
-from rest_framework.authtoken.views import obtain_auth_token
+from cards.views import CardViewSet, CommentViewSet
+from activity.views import ActivityLogViewSet
+from rest_framework_simplejwt.views import (
+    TokenObtainPairView,
+    TokenRefreshView,
+)
+
 router=DefaultRouter()
 router.register(r'boards', BoardViewSet)
+router.register(r'labels', LabelViewSet,basename='labels')
 router.register(r'lists', ListViewSet)
 router.register(r'cards', CardViewSet)
+router.register(r'comments', CommentViewSet)
+router.register(r'activity', ActivityLogViewSet,basename='activity')
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('api-auth/', include('rest_framework.urls')),
-    path('api-token-auth/',obtain_auth_token),
-    path('api/',include(router.urls)),
+    path('api/', include(router.urls)),
+    path('api/register/', RegisterView.as_view(), name='auth_register'),
+    path('api/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
+    path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
+    path('api/profile/', UserProfileView.as_view(), name='user_profile'),
 ]
