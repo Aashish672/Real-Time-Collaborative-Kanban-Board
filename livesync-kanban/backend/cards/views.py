@@ -1,20 +1,34 @@
 from django.db import transaction
 from django.db.models import F
 from rest_framework import viewsets, permissions, status
+from boards.permissions import IsBoardMember
 from rest_framework.decorators import action
 from rest_framework.response import Response
-from .models import Card
-from .serializers import CardSerializer
+from .models import Card, Comment
+from .serializers import CardSerializer, CommentSerializer
+from activity.utils import log_activity
 
 # Create your views here.
 
 class CardViewSet(viewsets.ModelViewSet):
     queryset = Card.objects.all()
     serializer_class = CardSerializer
-    permission_classes = [permissions.IsAuthenticated]
+    permission_classes = [permissions.IsAuthenticated, IsBoardMember]
+
+    def perform_create(self, serializer):
+        card = serializer.save()
+        log_activity(self.request.user, f"created card '{card.title}'", card)
+
+    def perform_update(self, serializer):
+        card = serializer.save()
+        log_activity(self.request.user, f"updated card '{card.title}'", card)
+
+    def perform_destroy(self, instance):
+        log_activity(self.request.user, f"deleted card '{instance.title}'", instance.parent_list.board) # Log to board as card is gone
+        instance.delete()
 
     def get_queryset(self):
-        return self.queryset.filter(parent_list__board__owner=self.request.user)
+        return self.queryset.filter(parent_list__board__members__user=self.request.user)
 
     @action(detail=True, methods=['post'])
     def move(self, request, pk=None):
@@ -66,4 +80,24 @@ class CardViewSet(viewsets.ModelViewSet):
 
             card.save()
 
+        log_activity(request.user, f"moved card '{card.title}'", card)
+
         return Response({'status': 'card moved', 'new_position': card.position})
+
+class CommentViewSet(viewsets.ModelViewSet):
+    queryset = Comment.objects.all()
+    serializer_class = CommentSerializer
+    permission_classes = [permissions.IsAuthenticated, IsBoardMember]
+
+    def get_queryset(self):
+        # Allow filtering by card_id
+        queryset = self.queryset
+        card_id = self.request.query_params.get('card_id')
+        if card_id:
+            queryset = queryset.filter(card_id=card_id)
+        # Ensure user has access to the board of the card
+        return queryset.filter(card__parent_list__board__members__user=self.request.user)
+
+    def perform_create(self, serializer):
+        comment = serializer.save(user=self.request.user)
+        log_activity(self.request.user, f"commented on '{comment.card.title}'", comment.card)
