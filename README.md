@@ -7,12 +7,14 @@ A modern, high-performance Kanban board designed for real-time team collaboratio
 ## 🚀 Deployment & Screenshots
 
 ### 🌐 Live Demo
-> **[Deployment Link will be added here]**
+> **http://kanban-frontend-13.232.82.42.s3-website.ap-south-1.amazonaws.com/login**
 
 ### 📸 Screenshots
 | Board View | Task Details |
 | :---: | :---: |
-| ![Board Placeholder](https://via.placeholder.com/400x250?text=Kanban+Board+Screenshot) | ![Detail Placeholder](https://via.placeholder.com/400x250?text=Task+Detail+Screenshot) |
+| <img width="1919" height="971" alt="image" src="https://github.com/user-attachments/assets/255f74c5-beab-4ca6-8342-543a40cbd375" /> | (<img width="1919" height="975" alt="image" src="https://github.com/user-attachments/assets/471fb55e-5e0c-4049-bfd5-3f1f59460e36" /> |
+
+
 
 ---
 
