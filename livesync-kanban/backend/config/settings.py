@@ -28,8 +28,8 @@ SECRET_KEY = 'django-insecure-*lx_6w2phk@_rf290tb-*$gb-hr_i#)rl$dyb+xh(xl^-^i3(l
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
-
+#ALLOWED_HOSTS = os.environ.get("ALLOWED_HOSTS", "*").split(",")
+ALLOWED_HOSTS = ['*']
 
 # Application definition
 
@@ -165,7 +165,9 @@ CHANNEL_LAYERS = {
     "default": {
         "BACKEND": "channels_redis.core.RedisChannelLayer",
         "CONFIG": {
-            "hosts": [("127.0.0.1", 6379)], # Or your Cloud Redis URL
+            "hosts": [(os.environ.get('REDIS_HOST', '127.0.0.1'), 6379)], # Or your Cloud Redis URL
         },
     },
 }
+
+CORS_ALLOW_ALL_ORIGINS = True # Simplest for now

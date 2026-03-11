@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link, useLocation } from 'react-router-dom';
 import api from '../utils/api';
 import { LogIn, User, Lock } from 'lucide-react';
 
@@ -16,14 +16,15 @@ const Login = () => {
         setLoading(true);
 
         try {
-            const response = await api.post('/api-token-auth/', {
+            const response = await api.post('/api/token/', {
                 username,
                 password,
             });
-            localStorage.setItem('token', response.data.token);
+            localStorage.setItem('access', response.data.access);
+            localStorage.setItem('refresh', response.data.refresh);
             navigate('/');
         } catch (err) {
-            setError(err.response?.data?.non_field_errors?.[0] || 'Invalid username or password');
+            setError(err.response?.data?.detail || 'Invalid username or password');
         } finally {
             setLoading(false);
         }
@@ -96,9 +97,9 @@ const Login = () => {
 
                     <div className="px-8 py-4 bg-gray-800/50 border-t border-gray-700 text-center">
                         <span className="text-gray-400 text-sm">Don't have an account? </span>
-                        <a href="#" className="text-indigo-400 hover:text-indigo-300 text-sm font-medium transition duration-200">
-                            Contact your admin
-                        </a>
+                        <Link to="/signup" className="text-indigo-400 hover:text-indigo-300 text-sm font-medium transition duration-200">
+                            Create an account
+                        </Link>
                     </div>
                 </div>
             </div>
