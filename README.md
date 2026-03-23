@@ -102,5 +102,5 @@ npm run dev
 ## 🤝 Contributing
 Contributions are welcome! Please feel free to submit a Pull Request.
 
-## 📄 License
-This project is licensed under the MIT License.
+## Project URL
+http://kanban-frontend-13.205.s3-website.ap-south-1.amazonaws.com/login
